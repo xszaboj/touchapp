@@ -1,0 +1,4 @@
+TouchApp.MainActivity, TouchApp;md5088dd7d0b72c9e85d1a474ad28a48896.MainActivity
+TouchApp.MainActivity, TouchApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md5088dd7d0b72c9e85d1a474ad28a48896.MainActivity
+TouchApp.MainActivity;md5088dd7d0b72c9e85d1a474ad28a48896.MainActivity
+touchapp.MainActivity;md5088dd7d0b72c9e85d1a474ad28a48896.MainActivity
