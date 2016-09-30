@@ -35,5 +35,5 @@ c:\users\xszab\documents\visual studio 2015\Projects\TouchApp\TouchApp\obj\Debug
 c:\users\xszab\documents\visual studio 2015\Projects\TouchApp\TouchApp\obj\Debug\android\assets\System.Xml.dll.mdb
 c:\users\xszab\documents\visual studio 2015\Projects\TouchApp\TouchApp\obj\Debug\android\assets\System.Xml.Linq.dll.mdb
 c:\users\xszab\documents\visual studio 2015\Projects\TouchApp\TouchApp\obj\Debug\android\assets\TouchApp.dll.mdb
-c:\users\xszab\documents\visual studio 2015\Projects\TouchApp\TouchApp\obj\Debug\TouchApp.dll.mdb
-c:\users\xszab\documents\visual studio 2015\Projects\TouchApp\TouchApp\bin\Debug\TouchApp.dll.mdb
+C:\Users\xszab\Documents\Visual Studio 2015\Projects\TouchApp\TouchApp\obj\Debug\TouchApp.dll.mdb
+C:\Users\xszab\Documents\Visual Studio 2015\Projects\TouchApp\TouchApp\bin\Debug\TouchApp.dll.mdb

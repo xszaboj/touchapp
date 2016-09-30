@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Sockets;
 using Android.App;
 using Android.Bluetooth;
 using Android.Content;
@@ -6,6 +7,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using TouchApp.MySpace;
 
 namespace TouchApp
 {
@@ -14,6 +16,7 @@ namespace TouchApp
     {
         int count = 1;
         private GestureDetector _gestureDetector;
+        private TcpClientmanager _manager;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -29,8 +32,9 @@ namespace TouchApp
 
             button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
             _gestureDetector = new GestureDetector(this);
-
-            
+            _manager = new TcpClientmanager();
+            _manager.Connect();
+            button.Click += delegate { _manager.SendMessage("close"); };
         }
         
 
@@ -38,6 +42,7 @@ namespace TouchApp
         {
             if (e.PointerCount > 1)
             {
+                _manager.SendMessage("multi");
                 TextView t = FindViewById<TextView>(Resource.Id.textView1);
                 t.Text = "multi";
 
@@ -46,6 +51,7 @@ namespace TouchApp
             }
             else
             {
+                _manager.SendMessage("single");
                 TextView t = FindViewById<TextView>(Resource.Id.textView1);
                 t.Text = "single";
 
