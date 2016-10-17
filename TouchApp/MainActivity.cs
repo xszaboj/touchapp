@@ -18,6 +18,7 @@ namespace TouchApp
         private TcpClientmanager _manager;
         private Coordinates _prev;
         private TouchEnum _action = TouchEnum.Single;
+        private bool isClickDown;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -78,6 +79,7 @@ namespace TouchApp
 
         public void OnLongPress(MotionEvent e)
         {
+            isClickDown = false;
             TextView t = FindViewById<TextView>(Resource.Id.textView1);
             _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.RightClick));
             t.Text = "OnLongPress";
@@ -114,13 +116,24 @@ namespace TouchApp
         {
             TextView t = FindViewById<TextView>(Resource.Id.textView1);
             t.Text = "onShowpress";
+            isClickDown = true;
+            _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.SingleClickDown));
         }
 
         public bool OnSingleTapUp(MotionEvent e)
         {
             TextView t = FindViewById<TextView>(Resource.Id.textView1);
-            t.Text = "Onsingletapup";
-            _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.SingleClick));
+            if (isClickDown)
+            {
+                isClickDown = false;
+                t.Text = "Up";
+                _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int) TouchEnum.SingleClickUp));
+            }
+            else
+            {
+                t.Text = "Click";
+                _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.SingleClick));
+            }
             return true;
         }
 
@@ -149,6 +162,10 @@ namespace TouchApp
                 var intent = new Intent(this, typeof(OptionsActivity));
                 StartActivity(intent);
                 return true;
+            }
+            if (keyCode == Keycode.VolumeDown)
+            {
+                switchClicks = !switchClicks;
             }
             return base.OnKeyUp(keyCode, e);
         }

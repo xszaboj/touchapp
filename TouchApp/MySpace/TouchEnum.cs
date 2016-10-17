@@ -18,6 +18,8 @@ namespace TouchApp.MySpace
         Multi = 1,
         SingleClick = 2,
         DoubleClick = 3,
-        RightClick = 4
+        RightClick = 4,
+        SingleClickDown = 5,
+        SingleClickUp = 6
     }
 }
