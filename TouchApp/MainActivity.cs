@@ -53,6 +53,7 @@ namespace TouchApp
 
         public override bool OnTouchEvent(MotionEvent e)
         {
+            var source = e.Source;
             _gestureDetector.OnTouchEvent(e);
             return false;
         }
@@ -91,9 +92,16 @@ namespace TouchApp
 
             SetNewPrevious(e2);
 
-
+            //send message
+            if (_action == TouchEnum.Multi)
+            {
+                _manager.SendMessage(string.Format("{0}|{1}|{2}", diffX, diffY*2, (int) _action));
+            }
+            else
+            {
+                _manager.SendMessage(string.Format("{0}|{1}|{2}", diffX, diffY, (int)_action));
+            }
             //Log messages
-            _manager.SendMessage(string.Format("{0}|{1}|{2}", diffX, diffY,(int)_action));
             TextView t2 = FindViewById<TextView>(Resource.Id.textView2);
             t2.Text = string.Format("e1x:{0}, e2x:{1}", e1.GetX(), e2.GetX());
 
@@ -148,7 +156,7 @@ namespace TouchApp
         private void DecideAction(MotionEvent e1)
         {
             var screenWidth = GetDeviceWidthInPixels();
-            _action = e1.GetX() > screenWidth - 45 ? TouchEnum.Multi : TouchEnum.Single;
+            _action = e1.GetX() > screenWidth - (screenWidth/100 * 10) ? TouchEnum.Multi : TouchEnum.Single;
         }
 
         private int GetDeviceWidthInPixels()
