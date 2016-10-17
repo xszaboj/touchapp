@@ -4,15 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:text="x:"
+        android:text="ip:"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView1" />
-    <TextView
-        android:text="y:"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+    <Button
+        android:text="Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView2" />
+        android:id="@+id/button1" />
 </LinearLayout>

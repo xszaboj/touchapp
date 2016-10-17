@@ -14,9 +14,10 @@ namespace TouchApp
     [Activity(Label = "TouchApp", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity, GestureDetector.IOnGestureListener, GestureDetector.IOnDoubleTapListener
     {
-        int count = 1;
         private GestureDetector _gestureDetector;
         private TcpClientmanager _manager;
+        private Coordinates _prev;
+        private TouchEnum _action = TouchEnum.Single;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -27,49 +28,43 @@ namespace TouchApp
 
             // Get our button from the layout resource,
             // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.MyButton);
-            
-
-            button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
-            _gestureDetector = new GestureDetector(this);
-            _manager = new TcpClientmanager();
-            _manager.Connect();
-            button.Click += delegate { _manager.SendMessage("close"); };
+            if (_gestureDetector == null)
+            {
+                _gestureDetector = new GestureDetector(this);
+            }
+            if (_manager == null)
+            {
+                _manager = new TcpClientmanager();
+                _manager.Connect();
+            }
         }
-        
+
+        protected override void OnStop()
+        {
+            _manager.CloseConnection();
+            base.OnStop();
+        }
+
+        protected override void OnDestroy()
+        {
+            _manager.CloseConnection();
+            base.OnDestroy();
+        }
 
         public override bool OnTouchEvent(MotionEvent e)
         {
-            if (e.PointerCount > 1)
-            {
-                _manager.SendMessage("multi");
-                TextView t = FindViewById<TextView>(Resource.Id.textView1);
-                t.Text = "multi";
-
-                TextView coords = FindViewById<TextView>(Resource.Id.textView2);
-                coords.Text = string.Format("X: {0}, Y:{1}", e.GetX(), e.GetY());
-            }
-            else
-            {
-                _manager.SendMessage("single");
-                TextView t = FindViewById<TextView>(Resource.Id.textView1);
-                t.Text = "single";
-
-                TextView coords = FindViewById<TextView>(Resource.Id.textView2);
-                coords.Text = string.Format("X: {0}, Y:{1}", e.GetX(), e.GetY());
-            }
-
-        return true;
-
-        //_gestureDetector.OnTouchEvent(e);
-        //    return false;
-
+            _gestureDetector.OnTouchEvent(e);
+            return false;
         }
 
         public bool OnDown(MotionEvent e)
         {
-            TextView t = FindViewById<TextView>(Resource.Id.textView1);
-            t.Text = "OnDown";
+            _prev = new Coordinates()
+            {
+                X = (int)e.GetX(),
+                Y = (int)e.GetY()
+            };
+            
             return true;
         }
 
@@ -83,16 +78,27 @@ namespace TouchApp
         public void OnLongPress(MotionEvent e)
         {
             TextView t = FindViewById<TextView>(Resource.Id.textView1);
+            _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.RightClick));
             t.Text = "OnLongPress";
         }
 
         public bool OnScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
         {
-            TextView t = FindViewById<TextView>(Resource.Id.textView1);
-            t.Text = string.Format("DistanceX:{0}", distanceX);
+            DecideAction(e1);
 
+            int diffX = (int)e2.GetX() - _prev.X;
+            int diffY = (int)e2.GetY() - _prev.Y;
+
+            SetNewPrevious(e2);
+
+
+            //Log messages
+            _manager.SendMessage(string.Format("{0}|{1}|{2}", diffX, diffY,(int)_action));
             TextView t2 = FindViewById<TextView>(Resource.Id.textView2);
-            t2.Text = string.Format("DistanceY:{0}", distanceY);
+            t2.Text = string.Format("e1x:{0}, e2x:{1}", e1.GetX(), e2.GetX());
+
+            TextView t1 = FindViewById<TextView>(Resource.Id.textView1);
+            t1.Text = _action == TouchEnum.Single ? "Move" : "Scroll";
             return true;
         }
 
@@ -106,31 +112,66 @@ namespace TouchApp
         {
             TextView t = FindViewById<TextView>(Resource.Id.textView1);
             t.Text = "Onsingletapup";
+            _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.SingleClick));
             return true;
         }
 
         public bool OnDoubleTap(MotionEvent e)
         {
-            TextView t = FindViewById<TextView>(Resource.Id.textView2);
+            TextView t = FindViewById<TextView>(Resource.Id.textView1);
             t.Text = "OnDoubleTap";
+            _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.DoubleClick));
             return true;
         }
 
         public bool OnDoubleTapEvent(MotionEvent e)
         {
-            TextView t = FindViewById<TextView>(Resource.Id.textView2);
-            t.Text = "OnDoubleTapEvent";
             return true;
         }
 
         public bool OnSingleTapConfirmed(MotionEvent e)
         {
-            TextView t = FindViewById<TextView>(Resource.Id.textView2);
-            t.Text = "OnSingleTapConfirmed";
             return true;
         }
 
+        public override bool OnKeyUp(Keycode keyCode, KeyEvent e)
+        {
+            if (keyCode == Keycode.VolumeUp)
+            {
+                var intent = new Intent(this, typeof(OptionsActivity));
+                StartActivity(intent);
+                return true;
+            }
+            return base.OnKeyUp(keyCode, e);
+        }
 
+        private void DecideAction(MotionEvent e1)
+        {
+            var screenWidth = GetDeviceWidthInPixels();
+            _action = e1.GetX() > screenWidth - 45 ? TouchEnum.Multi : TouchEnum.Single;
+        }
+
+        private int GetDeviceWidthInPixels()
+        {
+            var screen = Resources.DisplayMetrics;
+            var screenWidth = screen.WidthPixels;
+            return screenWidth;
+        }
+
+        private void SetNewPrevious(MotionEvent e2)
+        {
+            _prev = new Coordinates()
+            {
+                X = (int)e2.GetX(),
+                Y = (int)e2.GetY()
+            };
+        }
+
+        private struct Coordinates
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+        }
     }
 }
 

@@ -43,5 +43,10 @@ namespace TouchApp.MySpace
             serverStream.Write(outStream, 0, outStream.Length);
             serverStream.Flush();
         }
+
+        public void CloseConnection()
+        {
+            _clientSocket.Close();
+        }
     }
 }
