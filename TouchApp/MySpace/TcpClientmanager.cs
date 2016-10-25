@@ -13,8 +13,9 @@ using Android.Widget;
 
 namespace TouchApp.MySpace
 {
-    public class TcpClientmanager
+    public class TcpClientmanager : IMessagener
     {
+        private const int TimeoutInSec = 5;
         private bool on = true;
         readonly TcpClient _clientSocket = new TcpClient();
 
@@ -22,11 +23,19 @@ namespace TouchApp.MySpace
         {
             try
             {
-                _clientSocket.Connect("192.168.0.5", 8889);
+                string address = Settings.IPSettings;
+                int port = Settings.Port;
+                var result = _clientSocket.BeginConnect(address, port, null, null);
+                var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(TimeoutInSec));
+                if (!success)
+                {
+                    throw new Exception("Failed to connect.");
+                }
+                _clientSocket.EndConnect(result);
             }
             catch (Exception e)
             {
-                throw e;
+                throw;
             }
         }
 

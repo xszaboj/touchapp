@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using TouchApp.MySpace;
 
 namespace TouchApp
 {
@@ -22,12 +23,16 @@ namespace TouchApp
             // Create your application here
             SetContentView(Resource.Layout.Options);
 
-            TextView t = FindViewById<TextView>(Resource.Id.textView1);
-            t.Text = "192.168.1.0";
+            EditText t = FindViewById<EditText>(Resource.Id.editText1);
+            t.Text = Settings.IPSettings;
+            EditText t2 = FindViewById<EditText>(Resource.Id.editText2);
+            t2.Text = Settings.Port.ToString();
 
             var saveButton = FindViewById<Button>(Resource.Id.button1);
             saveButton.Click += (sender, e) =>
             {
+                Settings.IPSettings = t.Text;
+                Settings.Port = int.Parse(t2.Text);
                 var intent = new Intent(this, typeof(MainActivity));
                 StartActivity(intent);
             };

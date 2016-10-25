@@ -15,7 +15,7 @@ namespace TouchApp.MySpace
     public enum TouchEnum
     {
         Single = 0,
-        Multi = 1,
+        Scroll = 1,
         SingleClick = 2,
         DoubleClick = 3,
         RightClick = 4,
