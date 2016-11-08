@@ -22,49 +22,57 @@ namespace TouchApp
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
             SetContentView(Resource.Layout.Main);
-
-            if (_gestureDetector == null)
+            try
             {
-                _gestureDetector = new GestureDetector(this);
-            }
-            
-            if (_manager == null)
-            {
-                try
+                if (_gestureDetector == null)
                 {
-                    _manager = new TcpClientmanager();
-                    _manager.Connect();
+                    _gestureDetector = new GestureDetector(this);
                 }
-                catch (Exception)
+
+                if (_manager == null)
                 {
-                    ShowAlertWindow("Connection problem", "Connection problem! Check IP address and port.", "Options",
-                    (sender, args) =>
+                    try
                     {
-                        var intent = new Intent(this, typeof(OptionsActivity));
-                        StartActivity(intent);
+                        _manager = new TcpClientmanager();
+                        _manager.Connect();
+                    }
+                    catch (Exception)
+                    {
+                        ShowAlertWindow("Connection problem", "Connection problem! Check IP address and port.",
+                            "Options",
+                            (sender, args) =>
+                            {
+                                var intent = new Intent(this, typeof(OptionsActivity));
+                                StartActivity(intent);
+                            });
+                    }
+                }
+                if (_gestureManager == null)
+                {
+                    _gestureManager = new GestureManager(_manager, new AdditionalInfo()
+                    {
+                        DeviceWidth = GetDeviceWidthInPixels()
                     });
                 }
             }
-            if (_gestureManager == null)
+            catch (Exception e)
             {
-                _gestureManager = new GestureManager(_manager, new AdditionalInfo()
-                {
-                    DeviceWidth = GetDeviceWidthInPixels()
-                });
+                
+                TextView t = FindViewById<TextView>(Resource.Id.textView1);
+                t.Text = e.ToString();
             }
         }
 
         protected override void OnStop()
         {
-            _manager.CloseConnection();
+            _manager?.CloseConnection();
             base.OnStop();
         }
 
         protected override void OnDestroy()
         {
-            _manager.CloseConnection();
+            _manager?.CloseConnection();
             base.OnDestroy();
         }
 
