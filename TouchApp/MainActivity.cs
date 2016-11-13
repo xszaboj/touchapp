@@ -22,6 +22,10 @@ namespace TouchApp
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += HandleExceptions;
+
             SetContentView(Resource.Layout.Main);
             try
             {
@@ -62,6 +66,12 @@ namespace TouchApp
                 TextView t = FindViewById<TextView>(Resource.Id.textView1);
                 t.Text = e.ToString();
             }
+        }
+
+        private void HandleExceptions(object sender, UnhandledExceptionEventArgs e)
+        {
+            TextView t = FindViewById<TextView>(Resource.Id.textView1);
+            t.Text = e.ToString();
         }
 
         protected override void OnStop()
