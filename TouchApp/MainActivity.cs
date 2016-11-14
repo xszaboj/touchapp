@@ -70,8 +70,7 @@ namespace TouchApp
 
         private void HandleExceptions(object sender, UnhandledExceptionEventArgs e)
         {
-            TextView t = FindViewById<TextView>(Resource.Id.textView1);
-            t.Text = e.ToString();
+            ShowAlertWindow("Error", e.ToString(), "continue", (o, args) => { });
         }
 
         protected override void OnStop()
