@@ -47,8 +47,7 @@ namespace TouchApp
                             "Options",
                             (sender, args) =>
                             {
-                                var intent = new Intent(this, typeof(OptionsActivity));
-                                StartActivity(intent);
+                                 GoToOptions();
                             });
                     }
                 }
@@ -153,6 +152,29 @@ namespace TouchApp
                 return false;
             }
             return base.OnKeyUp(keyCode, e);
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.options, menu);
+            return base.OnCreateOptionsMenu(menu);
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.options:
+                    GoToOptions();
+                    return true;
+            }
+            return base.OnOptionsItemSelected(item);
+        }
+
+        private void GoToOptions()
+        {
+            var intent = new Intent(this, typeof(OptionsActivity));
+            StartActivity(intent);
         }
 
         private int GetDeviceWidthInPixels()
