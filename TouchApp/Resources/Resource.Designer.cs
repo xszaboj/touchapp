@@ -60,6 +60,9 @@ namespace TouchApp
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f060006
+			public const int another = 2131099654;
+			
 			// aapt resource value: 0x7f060004
 			public const int button1 = 2131099652;
 			
@@ -111,7 +114,7 @@ namespace TouchApp
 		{
 			
 			// aapt resource value: 0x7f050000
-			public const int options = 2131034112;
+			public const int options_menu = 2131034112;
 			
 			static Menu()
 			{
@@ -131,6 +134,9 @@ namespace TouchApp
 			
 			// aapt resource value: 0x7f040000
 			public const int Hello = 2130968576;
+			
+			// aapt resource value: 0x7f040003
+			public const int another = 2130968579;
 			
 			// aapt resource value: 0x7f040002
 			public const int options = 2130968578;

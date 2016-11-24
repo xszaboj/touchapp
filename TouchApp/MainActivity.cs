@@ -156,7 +156,7 @@ namespace TouchApp
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            MenuInflater.Inflate(Resource.Menu.options, menu);
+            MenuInflater.Inflate(Resource.Menu.options_menu, menu);
             return base.OnCreateOptionsMenu(menu);
         }
 
