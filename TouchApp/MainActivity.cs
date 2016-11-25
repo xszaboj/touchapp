@@ -55,7 +55,7 @@ namespace TouchApp
                 {
                     _gestureManager = new GestureManager(_manager, new AdditionalInfo()
                     {
-                        DeviceWidth = GetDeviceWidthInPixels()
+                        DeviceWidth = this.GetDeviceWidthInPixels()
                     });
                 }
             }
@@ -167,6 +167,9 @@ namespace TouchApp
                 case Resource.Id.options:
                     GoToOptions();
                     return true;
+                case Resource.Id.another:
+                    GoToDraw();
+                    return true;
             }
             return base.OnOptionsItemSelected(item);
         }
@@ -177,11 +180,10 @@ namespace TouchApp
             StartActivity(intent);
         }
 
-        private int GetDeviceWidthInPixels()
+        private void GoToDraw()
         {
-            var screen = Resources.DisplayMetrics;
-            var screenWidth = screen.WidthPixels;
-            return screenWidth;
+            var intent = new Intent(this, typeof(DrawingActivity));
+            StartActivity(intent);
         }
 
         private void ShowAlertWindow(string title, string message, string positiveText, EventHandler<DialogClickEventArgs> positiveHandler)

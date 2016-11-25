@@ -12,17 +12,17 @@ using Android.Widget;
 
 namespace TouchApp.MySpace
 {
-    public class GestureManager
+    public class DrawingManager
     {
         private Coordinates _prev;
         private TouchEnum _action = TouchEnum.Single;
-        private bool _select;
+        private bool _draw;
         private float _sensitivity = 1;
 
         private readonly IMessagener _manager;
         private readonly AdditionalInfo _info;
 
-        public GestureManager(IMessagener manager, AdditionalInfo info)
+        public DrawingManager(IMessagener manager, AdditionalInfo info)
         {
             _manager = manager;
             _info = info;
@@ -39,14 +39,16 @@ namespace TouchApp.MySpace
 
         public void OnTouch(MotionEvent e)
         {
-            if (!_select && e.PointerCount == 2)
+            if (IsInDrawArea(e) && !_draw)
             {
-                _select = true;
+                //start drawing
+                _draw = true;
                 _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.SingleClickDown));
             }
-            if (_select && e.Action == MotionEventActions.Up)
+            else if (_draw && e.Action == MotionEventActions.Up)
             {
-                _select = false;
+                //stop drawing
+                _draw = false;
                 _manager.SendMessage(string.Format("{0}|{1}|{2}", 0, 0, (int)TouchEnum.SingleClickUp));
             }
         }
@@ -67,56 +69,23 @@ namespace TouchApp.MySpace
 
         public void OnScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
         {
-            DecideAction(e1);
-
             int diffX = (int)e2.GetX() - _prev.X;
             int diffY = (int)e2.GetY() - _prev.Y;
 
             SetNewPrevious(e2);
-
-            //send message
-            if (_action == TouchEnum.Scroll)
-            {
-                _manager.SendMessage($"{diffX}|{diffY*2*_sensitivity}|{(int) _action}");
-            }
-            else
-            {
-                _manager.SendMessage($"{Math.Round(diffX*_sensitivity)}|{Math.Round(diffY * _sensitivity)}|{(int) _action}");
-            }
+            _manager.SendMessage($"{Math.Round(diffX * _sensitivity)}|{Math.Round(diffY * _sensitivity)}|{(int)_action}");
+            
         }
 
         public void OnSingleTapUp(MotionEvent motionEvent)
         {
-            _manager.SendMessage($"{0}|{0}|{(int) TouchEnum.SingleClick}");
+            _manager.SendMessage($"{0}|{0}|{(int)TouchEnum.SingleClick}");
         }
 
-        public void OnDoubleTap(MotionEvent motionEvent)
-        {
-            _manager.SendMessage($"{0}|{0}|{(int) TouchEnum.DoubleClick}");
-        }
-
-        public void SensitivityUp()
-        {
-            if (_sensitivity >= 5)
-            {
-                _sensitivity = 5;
-            }
-            _sensitivity = _sensitivity + 0.5f;
-        }
-
-        public void SensitivityDown()
-        {
-            if (_sensitivity <= 1)
-            {
-                _sensitivity = 1;
-            }
-            _sensitivity = _sensitivity - 0.5f;
-        }
-
-        private void DecideAction(MotionEvent e1)
+        private bool IsInDrawArea(MotionEvent e1)
         {
             var screenWidth = _info.DeviceWidth;
-            _action = e1.GetX() > screenWidth - (screenWidth / 100 * 10) ? TouchEnum.Scroll : TouchEnum.Single;
+            return e1.GetX() < screenWidth - (screenWidth / 100 * 30);
         }
     }
 }

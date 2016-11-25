@@ -57,10 +57,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DrawingActivity.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MySpace\AdditionalInfo.cs" />
     <Compile Include="MySpace\BlueToothManager.cs" />
+    <Compile Include="MySpace\Coordinates.cs" />
+    <Compile Include="MySpace\DrawingManager.cs" />
     <Compile Include="MySpace\GestureManager.cs" />
+    <Compile Include="MySpace\Helper.cs" />
     <Compile Include="MySpace\IMessagener.cs" />
     <Compile Include="MySpace\Settings.cs" />
     <Compile Include="MySpace\TcpClientmanager.cs" />
@@ -75,6 +79,9 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\layout\Options.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Drawing.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
